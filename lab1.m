@@ -20,7 +20,7 @@ clear all
 % showgrey(abs(F), 64, -Fabsmax, Fabsmax)
 % showgrey(angle(F), 64, -pi, pi)
 
-[Fhat, F, Fabsmax] = fftwave(128,128);
+[Fhat, F, Fabsmax] = fftwave(50,43);
 
 %% Part 2: Gaussian convolution implemented via FFT
 
