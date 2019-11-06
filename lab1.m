@@ -7,8 +7,11 @@ clear all
 
 %% Part 1: Properties of discrete Fourier Transform
 
-p = [1, 5, 9, 17, 17, 5, 64, 125, 128];
-q = [1, 9, 5, 9, 121, 1, 64, 1, 128];
+%p = [1, 5, 9, 17, 17, 5, 64, 120, 125, 128];
+%q = [1, 9, 5, 9, 121, 1, 64, 70, 1, 128];
+
+p = [21, -21]
+q = [14, -14]
 
 
 % for i = 1 : length(p)
@@ -38,7 +41,6 @@ q = [1, 9, 5, 9, 121, 1, 64, 1, 128];
 for i = 1 : length(p)
     figure()
     [real_, Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
-    keyboard
 end
     
 
