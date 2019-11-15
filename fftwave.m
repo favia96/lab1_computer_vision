@@ -1,4 +1,4 @@
-function[real_, Fhat, F, Fabsmax, amplitude, wavelength] = fftwave(u, v, sz)
+function[Fhat, F, Fabsmax, amplitude, wavelength] = fftwave(u, v, sz)
     if (nargin < 2)
         error('Requires at least two input arguments.')
     end
@@ -30,7 +30,6 @@ function[real_, Fhat, F, Fabsmax, amplitude, wavelength] = fftwave(u, v, sz)
     vc = v - 1 - sz;
     end
 
-    real_ = real(F);
     wavelength = 2*pi / sqrt(u.^2 + v.^2) ; % Replace by correct expression
     spectrum = sqrt(real(F).^2 + imag(F).^2);
     amplitude = max(max(spectrum)); % Replace by correct expression

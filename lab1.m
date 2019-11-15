@@ -1,49 +1,51 @@
-%% LAB 1 - COMPUTER VISION
+%% LAB 1 - COMPUTER VISION, November 2019
 %% by Federico Favia, Martin De Pellegrini
 
-clear
-clc
-clear all
+%% Initialization
+clear ; close all; clc
 
 %% Part 1: Properties of discrete Fourier Transform
+% basis functions
 
-%p = [1, 5, 9, 17, 17, 5, 64, 120, 125, 128];
-%q = [1, 9, 5, 9, 121, 1, 64, 70, 1, 128];
-
-p = [21, -21]
-q = [14, -14]
-
-
-% for i = 1 : length(p)
-%   	Fhat = zeros(128, 128);
-%     Fhat(p(i) , q(i) ) = 1;
-%     F = ifft2(Fhat);
-%     %figure()
-%     %set(FigH,sprintf('(p, q) = (%d, %d)', p(i), q(i)))
-%     Fabsmax = max(abs(F(:)));
-%     
-%     subplot(2,2,1)
-%     showgrey(real(F), 64, -Fabsmax, Fabsmax)
-%         
-%     subplot(2,2,2)
-%     showgrey(imag(F), 64, -Fabsmax, Fabsmax)
-%     
-%     subplot(2,2,3)
-%     showgrey(abs(F), 64, -Fabsmax, Fabsmax)
-%     
-%     subplot(2,2,4)
-%     showgrey(angle(F), 64, -pi, pi)
-%     
-%     keyboard
-% end
-
+p = [1, 2, 5, 9, 17, 17, 5, 64, 120, 70, 125, 128];
+q = [1, 2, 9, 5, 9, 121, 1, 64, 70, 120, 1, 128];
 
 for i = 1 : length(p)
     figure()
-    [real_, Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
+    [Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
+    w = waitforbuttonpress
 end
     
 
+%% linearity
+
+% F = [ zeros(56, 128); ones(16, 128); zeros(56, 128)]; %test image
+% G = F'; %transposed
+% H = F + 2 * G;
+% 
+% for i = 1 : 3
+%     figure()
+%     switch i
+%         case 1
+%             showgrey(F);
+%             Fhat = fft2(F);
+%             figure()
+%             showgrey(1 + abs(Fhat));
+%         case 2
+%             showgrey(G);
+%             Ghat = fft2(G);
+%             figure()
+%             showgrey(log(1 + abs(Ghat)));
+%         otherwise
+%             showgrey(H);
+%             Hhat = fft2(H);
+%             figure()
+%             %showgrey(log(1 + abs(Hhat)));
+%             showgrey(log(1 + abs(fftshift(Hhat))));
+%     end
+% end
+
+%% multiplication
 
 %% Part 2: Gaussian convolution implemented via FFT
 
