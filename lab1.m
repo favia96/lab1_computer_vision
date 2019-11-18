@@ -7,15 +7,31 @@ clear ; close all; clc
 %% Part 1: Properties of discrete Fourier Transform
 % basis functions
 
-% p = [1, 2, 5, 9, 17, 17, 5, 64, 120, 70, 125, 128];
-% q = [1, 2, 9, 5, 9, 121, 1, 64, 70, 120, 1, 128];
-% 
+p = [1, 2, 5, 9, 17, 17, 5, 64, 120, 70, 125, 128];
+q = [1, 2, 9, 5, 9, 121, 1, 64, 70, 120, 1, 128];
+
 % for i = 1 : length(p)
 %     figure()
 %     [Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
 %     w = waitforbuttonpress
 % end
-%     
+
+
+% question 2
+Q = 128; % dimension of original image
+orig_image = zeros(Q,Q);
+period = 5; %number of periods
+for m = 1 : 1 : Q % sine wave in spatial domain (original image)
+    for n = 1 : 1 : Q
+        orig_image(m,n) = 0.5 + 0.5.*sin(2.*pi.*(n./(Q./period))); %the "0.5" constants give values between 0 and 1 for use with "imshow"
+    end
+end
+subplot(1,2,1); imshow(orig_image); title('Original image');
+B = abs(fftshift(fft2(orig_image-0.5))); %delete the added scaling values before FFT, gives values symmetric around the x_axis
+subplot(1,2,2); imshow(B); title('FFT2 Magnitude');
+
+
+    
 
 %% linearity
 %%F = [ zeros(56, 128); ones(16, 128); zeros(56, 128)]; %test image
@@ -90,25 +106,27 @@ clear ; close all; clc
 % showfs(Zhat);
 % title("fs f x g");
 % 
-% Zhat2=conv2(Fhat,Ghat,'same');
+% Zhat2 = conv2(fftshift(Fhat),fftshift(Ghat),'same');
 % figure();
-% Z2 = ifft2(Zhat);
+% Z2 = ifft2(Zhat); % approximation of Z = F. * G
 % subplot(1,3,1)
 % showgrey(Z2); title("z2=f x g");
 % subplot(1,3,2)
+% test2=abs(fftshift(Zhat2));
+% showgrey(log(1+abs(fftshift(test2)))); % problems
 % title("Zhat2");
 % subplot(1,3,3)
-% Zhat3=fft2(Z2);
+% Zhat3 = fft2(Z2);
 % showfs(Zhat3); title("fft2(Z2)");
 
 %% information in fourier phase and magnitude
-img = phonecalc128;
-figure;
-showgrey(img);
-a=(10.0)^-10;
-figure;
-showgrey(pow2image(img,a));
-randphaseimage(;
+% img = phonecalc128;
+% figure;
+% showgrey(img);
+% a=(10.0)^-10;
+% figure;
+% showgrey(pow2image(img,a));
+% randphaseimage();
 
 %% Part 2: Gaussian convolution implemented via FFT
 
