@@ -32,7 +32,7 @@ function[Fhat, F, Fabsmax, amplitude, wavelength] = fftwave(u, v, sz)
 
     wavelength = 2*pi / sqrt(u.^2 + v.^2) ; % Replace by correct expression
     spectrum = sqrt(real(F).^2 + imag(F).^2);
-    amplitude = max(max(spectrum)); % Replace by correct expression
+    amplitude = max(max(spectrum(:))); % Replace by correct expression
     
     subplot(3, 2, 2);
     showgrey(fftshift(Fhat));
