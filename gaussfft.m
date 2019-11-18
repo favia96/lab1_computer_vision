@@ -15,8 +15,8 @@ function [im_out, varMat] = gaussfft(im_in, var)
 %     figure;
 %     mesh(gauss);
     
-    figure;
-    showgray(ifft2(gauss));
+    %figure;
+    %showgrey(ifft2(gauss));
     
     %filtering
     Im_out = Im_in.*gauss;

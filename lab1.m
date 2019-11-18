@@ -131,7 +131,6 @@ F1hat = fft2(F1);
 % subplot(1,3,3); showgrey(randphaseimage(img)); title('Magnitude'); % magnitude kept and phase as random distr
 
 % %% Part 2: Gaussian convolution implemented via FFT (Q14-Q15-Q16)
-% %write on e matlab procedure that perform a gaussian filtering in fourier domain
 % var = [0.1 0.3 1.0 10.0 100.0];
 % 
 % im = phonecalc128;
@@ -149,8 +148,8 @@ F1hat = fft2(F1);
 % subplot(324); showgray(im_out3); title('Variance in frequency = 1.0');
 % subplot(325); showgray(im_out4); title('Variance in frequency = 10.0');
 % subplot(326); showgray(im_out5); title('Variance in frequency = 100.0');
-% 
-% %% test
+
+%% test
 % im = phonecalc128;
 % var = 100.0;
 % Im_in = fft2(im);  %compute the fourier transform
@@ -182,7 +181,49 @@ F1hat = fft2(F1);
 % subplot(122); showgrey(im_out);
 
 %% Part 3: Smoothing (Q17-Q18)
-
 % office = office256;
-% add = gaussnoise(office, 16);
-% sap = sapnoise(office, 0.1, 255);
+% add = gaussnoise(office, 16); % add gaussian noise
+% sap = sapnoise(office, 0.1, 255); % add salt&pepper noise
+% % ADD = fft2(add);
+% % SAP = fft2(sap);
+% % figure()
+% % subplot(1,2,1); showfs(ADD); title("spectra SAP");
+% % subplot(1,2,2); showfs(SAP); title("spectra SAP");
+% 
+% 
+% % 3 type of filters for each of noisy image
+% % for gaussian noisy, gaussan smooth, median and ideal LP
+% gauss_gauss = discgaussfft(add, 0.9);
+% gauss_med = medfilt(add,3,3);
+% gauss_id = ideal(add,0.25);
+% % for sap noisy, gaussian smooth, median and ideal LP
+% sap_gauss = discgaussfft(sap, 2);
+% sap_med = medfilt(sap,3,3);
+% sap_id = ideal(sap,0.2);
+% % plotting
+% figure()
+% subplot(3,3,1); showgrey(office); title('Original image');
+% subplot(3,3,2); showgrey(add); title('Image + gauss noise');
+% subplot(3,3,3); showgrey(sap); title('Image + sap noise');
+% subplot(3,3,4); showgrey(gauss_gauss); title('gauss-Gauss smooth (0.9)');
+% subplot(3,3,5); showgrey(gauss_med); title('gauss-Med filt (3x3)');
+% subplot(3,3,6); showgrey(gauss_id); title('gauss-Ideal LP filt (0.25)');
+% subplot(3,3,7); showgrey(sap_gauss); title('sap-Gauss smooth (2)');
+% subplot(3,3,8); showgrey(sap_med); title('sap-Med filt (3x3)');
+% subplot(3,3,9); showgrey(sap_id); title('sap-Ideal LP filt (0.2)');
+
+
+%% Smoothing and subsampiing
+img = phonecalc256;
+smoothimg = img;
+N = 5;
+for i = 1 : N
+    if i > 1 % generate subsampled versions
+        img = rawsubsample(img);
+        smoothing = discgaussfft(img,0.9);
+        %smoothimg = ideal(img,0.1);
+        smoothimg = rawsubsample(smoothimg);
+    end
+    subplot(2, N, i); showgrey(img);
+    subplot(2, N, i+N); showgrey(smoothimg);
+end
