@@ -7,28 +7,28 @@ clear ; close all; clc
 %% Part 1: Properties of discrete Fourier Transform
 % basis functions
 
-p = [1, 2, 5, 9, 17, 17, 5, 64, 120, 70, 125, 128];
-q = [1, 2, 9, 5, 9, 121, 1, 64, 70, 120, 1, 128];
+p = [1, 2, 10, 45, 80, 17, 17, 5, 64, 10, 70, 125, 128];
+q = [1, 2, 80, 45, 10, 9, 121, 1, 64, 70, 120, 1, 128];
 
-% for i = 1 : length(p)
-%     figure()
-%     [Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
-%     w = waitforbuttonpress
-% end
-
-
-% question 2
-Q = 128; % dimension of original image
-orig_image = zeros(Q,Q);
-period = 5; %number of periods
-for m = 1 : 1 : Q % sine wave in spatial domain (original image)
-    for n = 1 : 1 : Q
-        orig_image(m,n) = 0.5 + 0.5.*sin(2.*pi.*(n./(Q./period))); %the "0.5" constants give values between 0 and 1 for use with "imshow"
-    end
+for i = 1 : length(p)
+     figure()
+     [Fhat_, F_, Fabsmax_, amplitude_, wavelength_ ] = fftwave(p(i),q(i));
+     w = waitforbuttonpress
 end
-subplot(1,2,1); imshow(orig_image); title('Original image');
-B = abs(fftshift(fft2(orig_image-0.5))); %delete the added scaling values before FFT, gives values symmetric around the x_axis
-subplot(1,2,2); imshow(B); title('FFT2 Magnitude');
+
+
+% % question 2
+% Q = 128; % dimension of original image
+% orig_image = zeros(Q,Q);
+% period = 5; %number of periods
+% for m = 1 : 1 : Q % sine wave in spatial domain (original image)
+%     for n = 1 : 1 : Q
+%         orig_image(m,n) = 0.5 + 0.5.*sin(2.*pi.*(n./(Q./period))); %the "0.5" constants give values between 0 and 1 for use with "imshow"
+%     end
+% end
+% subplot(1,2,1); imshow(orig_image); title('Original image');
+% B = abs(fftshift(fft2(orig_image-0.5))); %delete the added scaling values before FFT, gives values symmetric around the x_axis
+% subplot(1,2,2); imshow(B); title('FFT2 Magnitude');
 
 
     
