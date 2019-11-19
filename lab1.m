@@ -229,15 +229,28 @@ subplot(3,3,9); showgrey(sap_id); title('sap-Ideal LP filt (0.2)');
 
 %% Smoothing and subsampiing
 img = phonecalc256;
+%img = imread('wall.jpg');
+%img = rgb2gray(img);
 smoothimg = img;
+smoothimg_ideal = img;
 N = 5;
-for i = 1 : N
+for i = 1 : 5
     if i > 1 % generate subsampled versions
         img = rawsubsample(img);
-        smoothing = gaussfft(img,0.9);
-        %smoothimg = ideal(img,0.1);
+        smoothimg = gaussfft(smoothimg,2);
         smoothimg = rawsubsample(smoothimg);
+        smoothimg_ideal = ideal(smoothimg_ideal,0.25);
+        smoothimg_ideal = rawsubsample(smoothimg_ideal);
     end
-    subplot(2, N, i); showgrey(img);
-    subplot(2, N, i+N); showgrey(smoothimg);
+    % subplot(3, N, i); imshow(img); title('Original subsampled'); % for image 'wall.jpg'
+    subplot(3, N, i); showgrey(img); title('Original subsampled');
+    % if i == 1 % for image 'wall.jpg'
+        % subplot(3, N, i+N); imshow(smoothimg); title('Smoothed and subsampled');
+        % subplot(3, N, i+2*N); imshow(smoothimg_ideal); title('Smoothed id and subsampled');
+    % else % for image 'wall.jpg'
+        subplot(3, N, i+N); showgrey(smoothimg); title('Smoothed (2) and subsampled ');
+        subplot(3, N, i+2*N); showgrey(smoothimg_ideal); title('Smoothed id (0.25) and subsampled');
+    % end
+
 end
+
