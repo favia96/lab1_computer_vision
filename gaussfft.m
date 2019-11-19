@@ -1,27 +1,28 @@
-function [im_out, varMat] = gaussfft(im_in, var)
-    Im_in = fft2(im_in);  %compute the fourier transform
+function im_out = gaussfft(im_in, var)
+    Im_in = fft2(im_in);  % compute the fourier transform
     
     [dim1,dim2] = size(Im_in);
     
-%     x = -dim1/2:dim1/2 -1;
-%     y = -dim2/2:dim2/2 -1;
+%   x = -dim1/2:dim1/2 -1;
+%   y = -dim2/2:dim2/2 -1;
     
-    [x,y] = meshgrid(0:dim1- 1, 0:dim1 -1);  %mesh for the Gaussian Kernel
+    [x,y] = meshgrid(0 : dim1- 1, 0 : dim2 -1);  %mesh for the Gaussian Kernel
     
-    %Gaussian Kernel
+    % Gaussian Kernel in freq
     gauss = (1/2*pi*var).*exp((-((x-dim1/2).^2  + (y-dim2/2).^2)./(2*var)));
-    gauss = fftshift(gauss);
-%     gauss = (1/2*pi*var).*exp(-(x.^2)/(2*var)).*exp(-(y.^2)/(2*var));
-%     figure;
-%     mesh(gauss);
+    Gauss = fft2(gauss);
+%   Gauss = exp((-((x-dim1/2).^2  + (y-dim2/2).^2).*(var/2)));
+%   Gauss = fftshift(Gauss);
+
+%   gauss = (1/2*pi*var).*exp(-(x.^2)/(2*var)).*exp(-(y.^2)/(2*var));
+%   figure;
+%   mesh(gauss);3.
     
-    %figure;
-    %showgrey(ifft2(gauss));
+    % filtering (multiplication in fourier)
+    Im_out = Im_in .* Gauss;
     
-    %filtering
-    Im_out = Im_in.*gauss;
-    
-    %output
-    im_out = ifft2(Im_out);
-    varMat = variance(im_out);
+    % output
+    im_out = fftshift(ifft2(Im_out));
+    % varMat = variance(gauss);
+
 end

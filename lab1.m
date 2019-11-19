@@ -16,18 +16,18 @@ clear ; close all; clc
 %      w = waitforbuttonpress
 % end
 
-% % Q2
-% Q = 128; % dimension of original image
-% orig_image = zeros(Q,Q);
-% period = 5; %number of periods
-% for m = 1 : 1 : Q % sine wave in spatial domain (original image)
-%     for n = 1 : 1 : Q
-%         orig_image(m,n) = 0.5 + 0.5.*sin(2.*pi.*(n./(Q./period))); %the "0.5" constants give values between 0 and 1 for use with "imshow"
-%     end
-% end
-% subplot(1,2,1); imshow(orig_image); title('Original image');
-% B = abs(fftshift(fft2(orig_image-0.5))); %delete the added scaling values before FFT, gives values symmetric around the x_axis
-% subplot(1,2,2); imshow(B); title('FFT2 Magnitude');  
+% Q2
+Q = 128; % dimension of original image
+orig_image = zeros(Q,Q);
+period = 5; %number of periods
+for m = 1 : 1 : Q % sine wave in spatial domain (original image)
+    for n = 1 : 1 : Q
+        orig_image(m,n) = 0.5 + 0.5.*sin(2.*pi.*(n./(Q./period))); %the "0.5" constants give values between 0 and 1 for use with "imshow"
+    end
+end
+subplot(1,2,1); imshow(orig_image); title('Original image');
+B = abs(fftshift(fft2(orig_image-0.5))); %delete the added scaling values before FFT, gives values symmetric around the x_axis
+subplot(1,2,2); imshow(B); title('FFT2 Magnitude');  
 
 %% linearity (Q7-Q8-Q9)
 F = [ zeros(56, 128); ones(16, 128); zeros(56, 128)]; %test image
@@ -130,87 +130,101 @@ F1hat = fft2(F1);
 % subplot(1,3,2); showgrey(pow2image(img,a)); title('Phase'); % phase preserved and magnitude replaced by non-lin fct
 % subplot(1,3,3); showgrey(randphaseimage(img)); title('Magnitude'); % magnitude kept and phase as random distr
 
-% %% Part 2: Gaussian convolution implemented via FFT (Q14-Q15-Q16)
-% var = [0.1 0.3 1.0 10.0 100.0];
-% 
-% im = phonecalc128;
-% % im_out = gaussfft(im, 1.0);
-% [im_out1, varMat1] = gaussfft(im, var(1));
-% [im_out2, varMat2] = gaussfft(im, var(2));
-% [im_out3, varMat3] = gaussfft(im, var(3));
-% [im_out4, varMat4] = gaussfft(im, var(4));
-% [im_out5, varMat5] = gaussfft(im, var(5));
-% 
-% figure;
-% subplot(321); showgray(im); title('Original image');
-% subplot(322); showgray(im_out1); title('Variance in frequency = 0.1');
-% subplot(323); showgray(im_out2); title('Variance in frequency = 0.3');
-% subplot(324); showgray(im_out3); title('Variance in frequency = 1.0');
-% subplot(325); showgray(im_out4); title('Variance in frequency = 10.0');
-% subplot(326); showgray(im_out5); title('Variance in frequency = 100.0');
+%% Part 2: Gaussian convolution implemented via FFT (Q14-Q15-Q16)
+vars = [0.1 0.3 1.0 10.0 100.0]; % sigmas of gaussian kernel
+t = 1.0;
 
-%% test
-% im = phonecalc128;
-% var = 100.0;
-% Im_in = fft2(im);  %compute the fourier transform
-%     
-% [dim1,dim2] = size(Im_in);
-%     
-% % [x,y] = meshgrid(0:dim1-1, 0:dim2-1);  %mesh for the Gaussian Kernel
-% x = -dim1/2:dim1/2 -1;
-% y = -dim2/2:dim2/2 -1;
-%     
-%  %Gaussian Kernel
-% gauss = (1/2*pi*var).*exp((-(x.^2  + y.^2)./(2*var)));
-% % gauss = fftshift(gauss);
-% 
-% % gauss = (1/2*pi*var).*exp(-(x.^2)/(2*var)).*exp(-(y.^2)/(2*var));
-% % gauss = (1/2*pi*var).*exp((-((x-dim1/2).^2  + (y-dim2/2).^2)./(2*var)));
-% % gauss = fftshift(gauss);
-% 
-% mesh(gauss);
-% 
-% %filtering
-% Im_out = Im_in.*gauss;
-%     
-% %output
-% im_out = ifft2(Im_out);
-% 
-% figure;
-% subplot(121); showgrey(im);
-% subplot(122); showgrey(im_out);
+img = phonecalc128; % try with phonecalc128, few128, nallo128
+% im_out = gaussfft(im, 1.0);
+psf1 = gaussfft(deltafcn(128,128),vars(1)); variance1 = variance(psf1);
+psf2 = gaussfft(deltafcn(128,128),vars(2)); variance2 = variance(psf2);
+psf3 = gaussfft(deltafcn(128,128),vars(3)); variance3 = variance(psf3);
+psf4 = gaussfft(deltafcn(128,128),vars(4)); variance4 = variance(psf4);
+psf5 = gaussfft(deltafcn(128,128),vars(5)); variance5 = variance(psf5);
+
+figure()
+subplot(1,5,1); showgrey(psf1); title('imp. response, t = 0.1');
+subplot(1,5,2); showgrey(psf2); title('imp. response, t = 0.3');
+subplot(1,5,3); showgrey(psf3); title('imp. response, t = 1.0');
+subplot(1,5,4); showgrey(psf4); title('imp. response, t = 10.0');
+subplot(1,5,5); showgrey(psf5); title('imp. response, t = 100.0');
+
+img_out1 = gaussfft(img, t);
+img_out2 = gaussfft(img, t*4);
+img_out3 = gaussfft(img, t*16);
+img_out4 = gaussfft(img, t*64);
+img_out5 = gaussfft(img, t*256);
+
+figure;
+subplot(3,2,1); showgrey(img); title('Original image');
+subplot(3,2,2); showgrey(img_out1); title('gauss filt im, t = 1.0');
+subplot(3,2,3); showgrey(img_out2); title('gauss filt im, t = 4.0');
+subplot(3,2,4); showgrey(img_out3); title('gauss filt im, t = 16.0');
+subplot(3,2,5); showgrey(img_out4); title('gauss filt im, t = 64.0');
+subplot(3,2,6); showgrey(img_out5); title('gauss filt im, t = 256.0');
+
+%% test to build the function
+img = phonecalc128;
+vars = 100.0;
+Im_in = fft2(img);  %compute the fourier transform
+    
+[dim1,dim2] = size(Im_in);
+    
+% [x,y] = meshgrid(0:dim1-1, 0:dim2-1);  %mesh for the Gaussian Kernel
+x = -dim1/2:dim1/2 -1;
+y = -dim2/2:dim2/2 -1;
+    
+% Gaussian Kernel
+gauss = (1/2*pi*vars).*exp((-(x.^2  + y.^2)./(2*vars)));
+% gauss = fftshift(gauss);
+
+% gauss = (1/2*pi*var).*exp(-(x.^2)/(2*var)).*exp(-(y.^2)/(2*var));
+% gauss = (1/2*pi*var).*exp((-((x-dim1/2).^2  + (y-dim2/2).^2)./(2*var)));
+% gauss = fftshift(gauss);
+
+%mesh(gauss);
+
+%filtering
+Im_out = Im_in.*gauss;
+    
+%output
+im_out = ifft2(Im_out);
+
+figure;
+subplot(121); showgrey(img);
+subplot(122); showgrey(im_out);
 
 %% Part 3: Smoothing (Q17-Q18)
-% office = office256;
-% add = gaussnoise(office, 16); % add gaussian noise
-% sap = sapnoise(office, 0.1, 255); % add salt&pepper noise
-% % ADD = fft2(add);
-% % SAP = fft2(sap);
-% % figure()
-% % subplot(1,2,1); showfs(ADD); title("spectra SAP");
-% % subplot(1,2,2); showfs(SAP); title("spectra SAP");
-% 
-% 
-% % 3 type of filters for each of noisy image
-% % for gaussian noisy, gaussan smooth, median and ideal LP
-% gauss_gauss = discgaussfft(add, 0.9);
-% gauss_med = medfilt(add,3,3);
-% gauss_id = ideal(add,0.25);
-% % for sap noisy, gaussian smooth, median and ideal LP
-% sap_gauss = discgaussfft(sap, 2);
-% sap_med = medfilt(sap,3,3);
-% sap_id = ideal(sap,0.2);
-% % plotting
-% figure()
-% subplot(3,3,1); showgrey(office); title('Original image');
-% subplot(3,3,2); showgrey(add); title('Image + gauss noise');
-% subplot(3,3,3); showgrey(sap); title('Image + sap noise');
-% subplot(3,3,4); showgrey(gauss_gauss); title('gauss-Gauss smooth (0.9)');
-% subplot(3,3,5); showgrey(gauss_med); title('gauss-Med filt (3x3)');
-% subplot(3,3,6); showgrey(gauss_id); title('gauss-Ideal LP filt (0.25)');
-% subplot(3,3,7); showgrey(sap_gauss); title('sap-Gauss smooth (2)');
-% subplot(3,3,8); showgrey(sap_med); title('sap-Med filt (3x3)');
-% subplot(3,3,9); showgrey(sap_id); title('sap-Ideal LP filt (0.2)');
+office = office256;
+add = gaussnoise(office, 16); % add gaussian noise
+sap = sapnoise(office, 0.1, 255); % add salt&pepper noise
+ADD = fft2(add);
+SAP = fft2(sap);
+figure()
+subplot(1,2,1); showfs(ADD); title("spectra SAP");
+subplot(1,2,2); showfs(SAP); title("spectra SAP");
+
+
+% 3 type of filters for each of noisy image
+% for gaussian noisy, gaussan smooth, median and ideal LP
+gauss_gauss = gaussfft(add, 0.9); %0.9
+gauss_med = medfilt(add,3,3);
+gauss_id = ideal(add,0.25);
+% for sap noisy, gaussian smooth, median and ideal LP
+sap_gauss = gaussfft(sap, 2); %2
+sap_med = medfilt(sap,3,3);
+sap_id = ideal(sap,0.2);
+% plotting
+figure()
+subplot(3,3,1); showgrey(office); title('Original image');
+subplot(3,3,2); showgrey(add); title('Image + gauss noise');
+subplot(3,3,3); showgrey(sap); title('Image + sap noise');
+subplot(3,3,4); showgrey(gauss_gauss); title('gauss-Gauss smooth (0.9)');
+subplot(3,3,5); showgrey(gauss_med); title('gauss-Med filt (3x3)');
+subplot(3,3,6); showgrey(gauss_id); title('gauss-Ideal LP filt (0.25)');
+subplot(3,3,7); showgrey(sap_gauss); title('sap-Gauss smooth (2)');
+subplot(3,3,8); showgrey(sap_med); title('sap-Med filt (3x3)');
+subplot(3,3,9); showgrey(sap_id); title('sap-Ideal LP filt (0.2)');
 
 
 %% Smoothing and subsampiing
@@ -220,7 +234,7 @@ N = 5;
 for i = 1 : N
     if i > 1 % generate subsampled versions
         img = rawsubsample(img);
-        smoothing = discgaussfft(img,0.9);
+        smoothing = gaussfft(img,0.9);
         %smoothimg = ideal(img,0.1);
         smoothimg = rawsubsample(smoothimg);
     end
