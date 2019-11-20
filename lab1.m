@@ -90,37 +90,38 @@ F1hat = fft2(F1);
 % subplot(2,2,4); showfs(Fhat); title('log spectrum shifted F');
 
 %% rotation (Q12)
-% alpha = [30, 45, 60, 90];
-% % figure;
-% % subplot(221); showgrey(F1);
-% % subplot(222); showfs(fft2(F1));
+alpha = [30, 45, 60, 90];
+% figure;
+% subplot(2,2,1); showgrey(F1);
+% subplot(2,2,2); showfs(fft2(F1));
 
-% G1 = rot(F1, alpha(1));
-% Ghat1 = fft2(G1);
-% G2 = rot(F1, alpha(2));
-% Ghat2 = fft2(G2);
-% G3 = rot(F1, alpha(3));
-% Ghat3 = fft2(G3);
-% G4 = rot(F1, alpha(4));
-% Ghat4 = fft2(G4);
-% 
-% subplot(211); showgrey(G1); axis on
-% subplot(212); showfs(Ghat);
-% 
-% Hhat1 = rot(fftshift(Ghat1), -alpha(1));
-% Hhat2 = rot(fftshift(Ghat2), -alpha(2));
-% Hhat3 = rot(fftshift(Ghat3), -alpha(3));
-% Hhat4 = rot(fftshift(Ghat4), -alpha(4));
-% 
-% figure; 
-% subplot(241); showfs(fft2(F1)); title('original not rotate');
-% subplot(242); showfs(fft2(F1)); title('original not rotate');
-% subplot(243); showfs(fft2(F1)); title('original not rotate');
-% subplot(244); showfs(fft2(F1)); title('original not rotate');
-% subplot(245); showgrey(log(1+abs(Hhat1))); title('rotated back');
-% subplot(246); showgrey(log(1+abs(Hhat2))); title('rotated back');
-% subplot(247); showgrey(log(1+abs(Hhat3))); title('rotated back');
-% subplot(248); showgrey(log(1+abs(Hhat4))); title('rotated back');
+G1 = rot(F1, alpha(1));
+Ghat1 = fft2(G1);
+G2 = rot(F1, alpha(2));
+Ghat2 = fft2(G2);
+G3 = rot(F1, alpha(3));
+Ghat3 = fft2(G3);
+G4 = rot(F1, alpha(4));
+Ghat4 = fft2(G4);
+
+figure()
+subplot(2,1,1); showgrey(G1); axis on
+subplot(2,1,2); showfs(Ghat);
+
+Hhat1 = rot(fftshift(Ghat1), -alpha(1));
+Hhat2 = rot(fftshift(Ghat2), -alpha(2));
+Hhat3 = rot(fftshift(Ghat3), -alpha(3));
+Hhat4 = rot(fftshift(Ghat4), -alpha(4));
+
+figure; 
+subplot(2,4,1); showfs(fft2(F1)); title('original not rotate');
+subplot(2,4,2); showfs(fft2(F1)); title('original not rotate');
+subplot(2,4,3); showfs(fft2(F1)); title('original not rotate');
+subplot(2,4,4); showfs(fft2(F1)); title('original not rotate');
+subplot(2,4,5); showgrey(log(1+abs(Hhat1))); title('rotated back');
+subplot(2,4,6); showgrey(log(1+abs(Hhat2))); title('rotated back');
+subplot(2,4,7); showgrey(log(1+abs(Hhat3))); title('rotated back');
+subplot(2,4,8); showgrey(log(1+abs(Hhat4))); title('rotated back');
 
 % %% Information in fourier phase and magnitude (Q13)
 % img = nallo128; % try with phonecalc128, few128, nallo128
